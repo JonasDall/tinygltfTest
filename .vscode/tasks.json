@@ -10,6 +10,7 @@
 				"-g",
 				// "${fileDirname}/**.cpp",
 				"gameStuff.cpp",
+				"glad.c",
 				"${file}",
 				"-o",
 				"${fileDirname}\\${fileBasenameNoExtension}.exe",
