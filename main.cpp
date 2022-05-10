@@ -11,12 +11,24 @@ std::cout << a.getIndex() << '\n';
 if (!glfwInit())
 {
     std::cout << "Not working!\n";
-}
-else
-{
-    std::cout << "Working??\n";
+    return -1;
 }
 
+GLFWwindow* window = glfwCreateWindow(500, 500, "Test", NULL, NULL);
+if (!window)
+{
+    std::cout << "No window\n";
+    return -1;
+}
+
+glfwMakeContextCurrent(window);
+
+while (!glfwWindowShouldClose(window))
+{
+    //Loop
+}
+
+glfwDestroyWindow(window);
 glfwTerminate();
 
 return 0;
