@@ -1,14 +1,8 @@
 #include <iostream>
-#include "gameStuff.hpp"
-// #include "glad.h"
 #include "glad.h"
 #include "glfw3.h"
 
 int main(){
-
-gs::Object a(43);
-
-std::cout << a.getIndex() << '\n';
 
 if (!glfwInit())
 {

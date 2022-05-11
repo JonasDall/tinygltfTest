@@ -9,7 +9,6 @@
 				"-fdiagnostics-color=always",
 				"-g",
 				// "${fileDirname}/**.cpp",
-				"gameStuff.cpp",
 				"glad.c",
 				"${file}",
 				"-o",
