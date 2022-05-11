@@ -2,30 +2,30 @@
 #include "glad.h"
 #include "glfw3.h"
 
-int main(){
-
-if (!glfwInit())
+int main()
 {
-    std::cout << "Not working!\n";
-    return -1;
-}
+    if (!glfwInit())
+    {
+        std::cout << "Not working!\n";
+        return -1;
+    }
 
-GLFWwindow* window = glfwCreateWindow(500, 500, "Test", NULL, NULL);
-if (!window)
-{
-    std::cout << "No window\n";
-    return -1;
-}
+    GLFWwindow* window = glfwCreateWindow(500, 500, "Test", NULL, NULL);
+    if (!window)
+    {
+        std::cout << "No window\n";
+        return -1;
+    }
 
-glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(window);
 
-while (!glfwWindowShouldClose(window))
-{
-    //Loop
-}
+    while (!glfwWindowShouldClose(window))
+    {
+        //Loop
+    }
 
-glfwDestroyWindow(window);
-glfwTerminate();
+    glfwDestroyWindow(window);
+    glfwTerminate();
 
-return 0;
+    return 0;
 }
