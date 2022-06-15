@@ -1,6 +1,6 @@
 #include <iostream>
-#include "glad.h"
-#include "glfw3.h"
+#include "libraries/glad.h"
+#include "libraries/glfw3.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
