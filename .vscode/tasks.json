@@ -7,9 +7,12 @@
 			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-fdiagnostics-color=always",
-				"-I../libs",
+				"-I..\\libs",
 				"-g",
 				"..\\libs\\gl\\glad.c",
+				"..\\libs\\glWrapper\\glWrapper.cpp",
+				"..\\libs\\tinygltf\\stb.cpp",
+				"..\\libs\\tinygltf\\tinygltf.cpp",
 				"${file}",
 				"-o",
 				"${fileDirname}\\${fileBasenameNoExtension}.exe",
