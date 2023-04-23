@@ -60,6 +60,7 @@ namespace glWrap
    
     class Primitive{
         public:
+
         std::vector<Vertex>         m_vertices;
         std::vector<unsigned short> m_indices;
         unsigned int                m_material;
@@ -67,7 +68,7 @@ namespace glWrap
         GLuint                      m_VBO,
                                     m_VAO,
                                     m_EBO;
-                                    
+
         Primitive() = default;
         void Draw();
     };
@@ -80,5 +81,5 @@ namespace glWrap
         void Draw();
     };
 
-    std::vector<Mesh> loadModel(std::string path);
+    bool loadModel(std::string path, std::vector<std::unique_ptr<Mesh>>& meshes);
 }

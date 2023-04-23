@@ -212,7 +212,11 @@ void glWrap::Texture2D::SetActive(unsigned int unit){
     glBindTexture(GL_TEXTURE_2D, m_ID);
 }
 
-std::vector<glWrap::Mesh> glWrap::loadModel(std::string path){
+// 
+// *Mesh
+// 
+
+bool glWrap::loadModel(std::string path, std::vector<std::unique_ptr<Mesh>>& meshes){
     tinygltf::TinyGLTF loader;
     tinygltf::Model model;
     std::string error{};
@@ -222,9 +226,10 @@ std::vector<glWrap::Mesh> glWrap::loadModel(std::string path){
     {
         std::cout << error << " | " << warning << '\n';
 
-        std::vector<Mesh> empty;
-        return empty;
+        return 1;
     }
+
+    std::unique_ptr<Primitive> prim = std::unique_ptr<Primitive>(new Primitive());
 
     std::vector<float> position = GetAttributeData(model, model.meshes[0].primitives[0], "POSITION");
     std::vector<float> normal = GetAttributeData(model, model.meshes[0].primitives[0], "NORMAL");
@@ -250,4 +255,28 @@ std::vector<glWrap::Mesh> glWrap::loadModel(std::string path){
 
     std::vector<unsigned short> indices = GetIndexData(model, model.meshes[0].primitives[0]);
 
+    prim->m_vertices = vertices;
+    prim->m_indices = indices;
+
+    std::unique_ptr<Mesh> mesh = std::unique_ptr<Mesh>(new Mesh());
+
+    mesh->m_primitives.get().push_back(std::move(prim));
+
+    meshes.push_back(mesh);
+
+    return 0;
+}
+
+void glWrap::Primitive::Draw(){
+
+    glBindVertexArray(m_VAO);
+    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_SHORT, 0);
+    glBindVertexArray(0);
+}
+
+void glWrap::Mesh::Draw(){
+
+    for (int i{}; i < m_primitives.size(); ++i){
+        m_primitives[i].get()->Draw();
+    }
 }

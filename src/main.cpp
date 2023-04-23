@@ -50,6 +50,12 @@ int main()
     // Create shader object
     glWrap::Shader shader("assets/vertex.glsl", "assets/fragment.glsl");
 
+    std::vector<std::unique_ptr<glWrap::Mesh>> meshes;
+
+    if (glWrap::loadModel("assets/Triangle.gltf", meshes)){
+        std::cout << "Issue!";
+    }
+
     /*
     // Start loading file
     tinygltf::TinyGLTF loader;
@@ -165,9 +171,11 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.Use();
-        glBindVertexArray(VAO);
 
+        /*
+        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
+        */
 
         glfwSwapBuffers(window);
         glfwPollEvents();
