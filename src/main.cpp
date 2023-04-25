@@ -56,6 +56,15 @@ int main()
         std::cout << "Issue!";
     }
 
+    for (int i{}; i < meshes.size(); ++i){
+        for (int j{}; j < meshes[i].get()->m_primitives.size(); ++j){
+            // std::cout << meshes[i].get()->m_primitives[j].get()->m_EBO;
+            std::cout << "Prim " << j << ' ';
+        }
+    }
+
+    std::cout << '\n';
+
     /*
     // Start loading file
     tinygltf::TinyGLTF loader;
@@ -176,6 +185,10 @@ int main()
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
         */
+
+        for (int i{}; i < meshes.size(); ++i){
+            meshes[i].get()->Draw();
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -58,11 +58,17 @@ std::vector<float> GetAttributeData(tinygltf::Model& model, tinygltf::Primitive&
 
     std::vector<unsigned char> data;
     data.resize(buffer.data.size());
+    data = buffer.data;
 
     std::vector<float> attributeData;
     attributeData.resize(byteLength / sizeof(float));
 
     std::memcpy(attributeData.data(), data.data() + byteOffset, byteLength);
+
+    for (int i{}; i < attributeData.size(); ++i){
+        std::cout << attributeData[i] << ' ';
+    }
+    std::cout << '\n';
 
     return attributeData;
 }
@@ -77,11 +83,17 @@ std::vector<unsigned short> GetIndexData(tinygltf::Model& model, tinygltf::Primi
 
     std::vector<unsigned char> data;
     data.resize(buffer.data.size());
+    data = buffer.data;
 
     std::vector<unsigned short> indices;
     indices.resize(byteLength / sizeof(unsigned short));
 
     std::memcpy(indices.data(), data.data() + byteOffset, byteLength);
+
+    for (int i{}; i < indices.size(); ++i){
+        std::cout << indices[i] << ' ';
+    }
+    std::cout << '\n';
 
     return indices;
 }
@@ -229,14 +241,19 @@ bool glWrap::loadModel(std::string path, std::vector<std::unique_ptr<Mesh>>& mes
         return 1;
     }
 
-    std::unique_ptr<Primitive> prim = std::unique_ptr<Primitive>(new Primitive());
+    meshes.push_back(std::make_unique<Mesh>());
+    meshes.back().get()->m_primitives.push_back(std::make_unique<Primitive>());
+
+    Primitive& prim = *meshes.back().get()->m_primitives.back().get();
 
     std::vector<float> position = GetAttributeData(model, model.meshes[0].primitives[0], "POSITION");
     std::vector<float> normal = GetAttributeData(model, model.meshes[0].primitives[0], "NORMAL");
     std::vector<float> texCoord = GetAttributeData(model, model.meshes[0].primitives[0], "TEXCOORD_0");
 
     int floats = position.size() + normal.size() + texCoord.size();
-    std::vector<Vertex> vertices;
+
+    std::vector<Vertex>& vertices = prim.m_vertices;
+
     vertices.resize(floats / 8);
 
     for (int i{}; i < vertices.size(); ++i){
@@ -253,16 +270,14 @@ bool glWrap::loadModel(std::string path, std::vector<std::unique_ptr<Mesh>>& mes
         vertices[i].tex.y = texCoord[1 + posLoc];
     }
 
-    std::vector<unsigned short> indices = GetIndexData(model, model.meshes[0].primitives[0]);
+    prim.m_indices = GetIndexData(model, model.meshes[0].primitives[0]);
 
-    prim->m_vertices = vertices;
-    prim->m_indices = indices;
+    for (int i{}; i < prim.m_indices.size(); ++i){
+        std::cout << prim.m_indices[i] << ' ';
+    }
+    std::cout << '\n';
 
-    std::unique_ptr<Mesh> mesh = std::unique_ptr<Mesh>(new Mesh());
-
-    mesh->m_primitives.get().push_back(std::move(prim));
-
-    meshes.push_back(mesh);
+    CreateGlObjects(prim);
 
     return 0;
 }
