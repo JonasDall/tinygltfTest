@@ -65,11 +65,6 @@ std::vector<float> GetAttributeData(tinygltf::Model& model, tinygltf::Primitive&
 
     std::memcpy(attributeData.data(), data.data() + byteOffset, byteLength);
 
-    for (int i{}; i < attributeData.size(); ++i){
-        std::cout << attributeData[i] << ' ';
-    }
-    std::cout << '\n';
-
     return attributeData;
 }
 
@@ -89,11 +84,6 @@ std::vector<unsigned short> GetIndexData(tinygltf::Model& model, tinygltf::Primi
     indices.resize(byteLength / sizeof(unsigned short));
 
     std::memcpy(indices.data(), data.data() + byteOffset, byteLength);
-
-    for (int i{}; i < indices.size(); ++i){
-        std::cout << indices[i] << ' ';
-    }
-    std::cout << '\n';
 
     return indices;
 }
@@ -229,6 +219,7 @@ void glWrap::Texture2D::SetActive(unsigned int unit){
 // 
 
 bool glWrap::loadModel(std::string path, std::vector<std::unique_ptr<Mesh>>& meshes){
+
     tinygltf::TinyGLTF loader;
     tinygltf::Model model;
     std::string error{};
@@ -241,44 +232,46 @@ bool glWrap::loadModel(std::string path, std::vector<std::unique_ptr<Mesh>>& mes
         return 1;
     }
 
-    meshes.push_back(std::make_unique<Mesh>());
-    meshes.back().get()->m_primitives.push_back(std::make_unique<Primitive>());
+    meshes.clear();
 
-    Primitive& prim = *meshes.back().get()->m_primitives.back().get();
+    for(int i{}; i < model.meshes.size(); ++i){
 
-    std::vector<float> position = GetAttributeData(model, model.meshes[0].primitives[0], "POSITION");
-    std::vector<float> normal = GetAttributeData(model, model.meshes[0].primitives[0], "NORMAL");
-    std::vector<float> texCoord = GetAttributeData(model, model.meshes[0].primitives[0], "TEXCOORD_0");
+        meshes.push_back(std::make_unique<Mesh>());
 
-    int floats = position.size() + normal.size() + texCoord.size();
+            for(int j{}; j < model.meshes[i].primitives.size(); ++j){
 
-    std::vector<Vertex>& vertices = prim.m_vertices;
+            meshes.back().get()->m_primitives.push_back(std::make_unique<Primitive>());
+            Primitive& prim = *meshes.back().get()->m_primitives.back().get();
 
-    vertices.resize(floats / 8);
+            std::vector<float> position = GetAttributeData(model, model.meshes[i].primitives[j], "POSITION");
+            std::vector<float> normal = GetAttributeData(model, model.meshes[i].primitives[j], "NORMAL");
+            std::vector<float> texCoord = GetAttributeData(model, model.meshes[i].primitives[j], "TEXCOORD_0");
 
-    for (int i{}; i < vertices.size(); ++i){
-        int posLoc = i * 3;
-        int texLoc = i * 2;
+            int floats = position.size() + normal.size() + texCoord.size();
 
-        vertices[i].pos.x = position[0 + posLoc];
-        vertices[i].pos.y = position[1 + posLoc];
-        vertices[i].pos.z = position[2 + posLoc];
-        vertices[i].nor.x = normal[0 + posLoc];
-        vertices[i].nor.y = normal[1 + posLoc];
-        vertices[i].nor.z = normal[2 + posLoc];
-        vertices[i].tex.x = texCoord[0 + posLoc];
-        vertices[i].tex.y = texCoord[1 + posLoc];
+            std::vector<Vertex>& vertices = prim.m_vertices;
+
+            vertices.resize(floats / 8);
+
+            for (int x{}; x < vertices.size(); ++x){
+                int posLoc = x * 3;
+                int texLoc = x * 2;
+
+                vertices[x].pos.x = position[0 + posLoc];
+                vertices[x].pos.y = position[1 + posLoc];
+                vertices[x].pos.z = position[2 + posLoc];
+                vertices[x].nor.x = normal[0 + posLoc];
+                vertices[x].nor.y = normal[1 + posLoc];
+                vertices[x].nor.z = normal[2 + posLoc];
+                vertices[x].tex.x = texCoord[0 + posLoc];
+                vertices[x].tex.y = texCoord[1 + posLoc];
+            }
+
+            prim.m_indices = GetIndexData(model, model.meshes[i].primitives[j]);
+
+            CreateGlObjects(prim);
+            }
     }
-
-    prim.m_indices = GetIndexData(model, model.meshes[0].primitives[0]);
-
-    for (int i{}; i < prim.m_indices.size(); ++i){
-        std::cout << prim.m_indices[i] << ' ';
-    }
-    std::cout << '\n';
-
-    CreateGlObjects(prim);
-
     return 0;
 }
 
